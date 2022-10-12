@@ -1,0 +1,52 @@
+{
+  "name": "aptx-validator",
+  "version": "1.0.1",
+  "description": "易用且可拓展的 Node.js 参数校验库",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "start": "ts-node --esm src/index.ts",
+    "test": "ts-node --esm test/index.ts",
+    "build": "tsc"
+  },
+  "files": [
+    "dist",
+    "package.json",
+    "package-lcok.json",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dipper30/aptx-node-validator.git"
+  },
+  "keywords": [
+    "Node.js",
+    "Validator",
+    "Typescript",
+    "Javascript",
+    "参数",
+    "校验"
+  ],
+  "author": "Zijun Zong",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Dipper30/aptx-node-validator/issues"
+  },
+  "homepage": "https://github.com/Dipper30/aptx-node-validator#readme",
+  "dependencies": {
+    "@types/node": "^18.8.4",
+    "assert": "^2.0.0",
+    "module-alias": "^2.2.2",
+    "node-ts": "^5.1.2",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.4.0",
+    "typescript": "^4.8.4"
+  },
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "_moduleAliases": {
+    "@": "./src"
+  }
+}
