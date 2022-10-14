@@ -69,7 +69,7 @@ class ArrayValidator {
    * @param {ValidateFunction} fn
    * @returns {ObjectValidator} ObjectValidator
    */
-  validate (fn: ValidateFunction) {
+  custom (fn: ValidateFunction) {
     this.#pushTask(fn)
     return this
   }

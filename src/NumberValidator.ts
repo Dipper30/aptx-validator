@@ -132,7 +132,7 @@ class NumberValidator {
    * @param {ValidateFunction} fn
    * @returns {NumberValidator} NumberValidator
    */
-  validate (fn: ValidateFunction) {
+  custom (fn: ValidateFunction) {
     this.#pushTask(fn)
     return this
   }

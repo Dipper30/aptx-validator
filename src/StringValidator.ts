@@ -145,7 +145,7 @@ class StringValidator {
    * @param {ValidateFunction} fn
    * @returns {StringValidator} StringValidator
    */
-  validate (fn: ValidateFunction) {
+  custom (fn: ValidateFunction) {
     this.#pushTask(fn)
     return this
   }

@@ -187,8 +187,8 @@ new Validator(param).array(objectValidator).result() // false, Bob 的 lastName 
 
 const isOdd = (param) => param % 2 === 1 // 是否为奇数
 
-// 使用 validate 进行自定义方法声明
-new Validator(13).required().number().validate(isOdd).result() // true
+// 使用 custom 进行自定义方法声明
+new Validator(13).required().number().custom(isOdd).result() // true
 
 ```
 
@@ -198,7 +198,7 @@ new Validator(13).required().number().validate(isOdd).result() // true
 // 对常用的或逻辑复杂的校验器可以做拆分并复用
 
 // 这是一个毫无逻辑的 String 校验器
-const customizedValidator = new Validator().required().string().minLength(12).validate(
+const customizedValidator = new Validator().required().string().minLength(12).custom(
   (param) => param.split('&').length > 2
 )
 

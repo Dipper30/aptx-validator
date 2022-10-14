@@ -30,11 +30,11 @@ try {
   assert.ok(r.result(), 'test general-4 fails')
 
   v = 2
-  r = new Validator(v).required().number().validate((v: any) => v % 2 === 0).errText('validate function: even number')
+  r = new Validator(v).required().number().custom((v: any) => v % 2 === 0).errText('validate function: even number')
   assert.ok(r.result(), 'test general-5 fails')
 
   v = 2
-  r = new Validator(v).required().number().validate((v: any) => v % 2 === 1).errText('validate function: odd number')
+  r = new Validator(v).required().number().custom((v: any) => v % 2 === 1).errText('validate function: odd number')
   assert.deepStrictEqual(r.result(), false, 'test general-6 fails')
 
   v = true
@@ -56,11 +56,11 @@ try {
   assert.ok(r.result(), 'test general-10 fails')
 
   v = 4
-  r = new Validator(v).number().use(customizedValidator).validate((v: any) => v === 3)
+  r = new Validator(v).number().use(customizedValidator).custom((v: any) => v === 3)
   assert.deepStrictEqual(r.result(), false, 'test general-11 fails')
 
   v = 4
-  r = new Validator(v).number().use(customizedValidator).validate((v: any) => v === 4)
+  r = new Validator(v).number().use(customizedValidator).custom((v: any) => v === 4)
   assert.ok(r.result(), 'test general-12 fails')
 
   override('min', (min: number) => {
@@ -267,7 +267,7 @@ try {
   customizedValidator = new Validator().object().rules({
     'id': new Validator().number(),
     'name': new Validator().object().rules({
-      'value': new Validator().string().validate((str: string) => str.length >= 5).errText('name value not valid'),
+      'value': new Validator().string().custom((str: string) => str.length >= 5).errText('name value not valid'),
     }).errText('name not valid'),
   })
   v = [
@@ -281,7 +281,7 @@ try {
   customizedValidator = new Validator().object().rules({
     'id': new Validator().number(),
     'name': new Validator().object().rules({
-      'value': new Validator().string().validate((str: string) => str.length >= 5),
+      'value': new Validator().string().custom((str: string) => str.length >= 5),
     }),
   })
   v = [
@@ -294,7 +294,7 @@ try {
   customizedValidator = new Validator().object().rules({
     'id': new Validator().number(),
     'name': new Validator().object().rules({
-      'value': new Validator().string().validate((str: string) => str.length >= 6),
+      'value': new Validator().string().custom((str: string) => str.length >= 6),
     }),
   })
   v = [

@@ -29,7 +29,7 @@ class BooleanValidator {
    * @param {ValidateFunction} fn
    * @returns {BooleanValidator} BooleanValidator
    */
-  validate (fn: ValidateFunction) {
+  custom (fn: ValidateFunction) {
     this.#pushTask(fn)
     return this
   }
