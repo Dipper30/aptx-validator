@@ -1,6 +1,6 @@
 {
   "name": "aptx-validator",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "易用且可拓展的 Node.js 参数校验库",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",

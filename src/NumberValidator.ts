@@ -19,19 +19,102 @@ class NumberValidator {
     this.#require = require
     this.#errText = errText
     this.#pushTask(Utils.number())
+    this.use = this.use.bind(this)
   }
 
   #pushTask (fn: ValidateFunction) {
     this.#validationTasks.push(fn)
   }
 
-  min (v: number) {
-    this.#pushTask(Utils.min(v))
+  /**
+   * Set minimum value of a number.
+   * Returns true if number >= min.
+   * This method will be tested when NumberValidator.result() is called.
+   * @param {number} min minimum value
+   * @returns {NumberValidator} NumberValidator
+   */
+  min (min: number) {
+    this.#pushTask(Utils.min(min))
     return this
   }
 
-  max (v: number) {
-    this.#pushTask(Utils.max(v))
+  /**
+   * Set maximum value of a number.
+   * Returns true if number <= max.
+   * This method will be tested when NumberValidator.result() is called.
+   * @param {number} max maximum value
+   * @returns {NumberValidator} NumberValidator
+   */
+  max (max: number) {
+    this.#pushTask(Utils.max(max))
+    return this
+  }
+
+  /**
+   * Check if a number is an integer.
+   * Returns true if number is an integer.
+   * This method will be tested when NumberValidator.result() is called.
+   * @returns {NumberValidator} NumberValidator
+   */
+  int () {
+    this.#pushTask(Utils.int())
+    return this
+  }
+
+  /**
+   * Check if number is positive.
+   * Returns true if number >= 0.
+   * This method will be tested when NumberValidator.result() is called.
+   * @returns {NumberValidator} NumberValidator
+   */
+  positive () {
+    this.#pushTask(Utils.positive())
+    return this
+  }
+
+  /**
+   * Check if number is negative.
+   * Returns true if number <= 0.
+   * This method will be tested when NumberValidator.result() is called.
+   * @returns {NumberValidator} NumberValidator
+   */
+  negative () {
+    this.#pushTask(Utils.negative())
+    return this
+  }
+
+  /**
+   * Check if number is a positive integer.
+   * Returns true if the number is a positive integer.
+   * This method will be tested when NumberValidator.result() is called.
+   * @returns {NumberValidator} NumberValidator
+   */
+  id () {
+    this.#pushTask(Utils.id())
+    return this
+  }
+
+  /**
+   * Set fixed length of a float number.
+   *Returns true if the fixed length equals.
+   * This method will be tested when NumberValidator.result() is called.
+   * @param {number} len fixed length
+   * @returns {NumberValidator} NumberValidator
+   */
+  toFixed (len: number) {
+    this.#pushTask(Utils.toFixed(len))
+    return this
+  }
+
+  /**
+   * Check if number is one of the array elements.
+   * Returns true if the number is in the array.
+   * This method will be tested when NumberValidator.result() is called.
+   * @param {number[]} arr number set
+   * @returns {NumberValidator} NumberValidator
+   */
+  oneof (arr: number[]) {
+    this.#pushTask(Utils.oneof(arr))
     return this
   }
 
