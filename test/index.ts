@@ -222,7 +222,7 @@ try {
   }).errText('nested object not required')
   assert.deepStrictEqual(r.result(), false, 'test object-8 fails')
   assert.deepStrictEqual(r.getErrText(), 'invalid n', 'test object-8-error-text fails')
-
+  
   console.log('\x1B[32m%s\x1B[0m', 'Object tests passed!')
   console.log('==========')
 } catch (error) {
