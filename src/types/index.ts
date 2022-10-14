@@ -23,8 +23,28 @@ export interface IUtils {
   string: UtilFunction,
   object: UtilFunction,
   array: UtilFunction,
+
+  // any
+  oneof: UtilFunction,
+
+  // number
   min: UtilFunction,
   max: UtilFunction,
+  int: UtilFunction,
+  positive: UtilFunction,
+  negative: UtilFunction,
+  id: UtilFunction,
+  toFixed: UtilFunction,
+
+  // string
+  minLength: UtilFunction,
+  maxLength: UtilFunction,
+  numeric: UtilFunction,
+  booleanStr: UtilFunction,
+  useRE: UtilFunction,
+  email: UtilFunction,
+  phone: UtilFunction,
+  date: UtilFunction,
 }
 
 export type AllValidator =

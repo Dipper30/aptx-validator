@@ -1,7 +1,8 @@
-const assert = require('assert')
+import assert from 'assert'
 import 'module-alias'
 import { AllValidator } from '@/types'
 import { Validator, override } from '../src/index'
+import runTests from './functions'
 
 let r: AllValidator
 let v: any
@@ -341,3 +342,6 @@ try {
 // r = new Validator().required().number().min(2).max(2).errText('require number between 1 and 2')
 // // assert.deepStrictEqual(r.result(), false, 'test number-2 fails')
 // console.log(r.result())
+
+
+runTests()
