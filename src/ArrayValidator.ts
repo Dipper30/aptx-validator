@@ -1,6 +1,6 @@
 import { Validator } from '.'
 import { AllValidator, ValidateFunction } from './types'
-import Utils, { isEmptyValue } from './Utils'
+import Utils, { DEFAULT_ERROR_TEXT, isEmptyValue } from './Utils'
 import 'module-alias'
 
 /**
@@ -83,6 +83,15 @@ class ArrayValidator {
   }
 
   /**
+   * set error text if the input is not default error text
+   * @param text 
+   */
+  #setErrText (text: string) {
+    if (text === DEFAULT_ERROR_TEXT || text === '') return
+    this.#errText = text
+  }
+
+  /**
    * Run validation by executing each validation method and return a boolean value.
    * 1. if the param is an empty value (null | undefined | NaN)
    *    a. if value is required, returns false
@@ -107,7 +116,10 @@ class ArrayValidator {
       for (const value of this.#param) {
         this.#rule.setParam(value)
         this.#isValid = this.#rule.result()
-        if (!this.#isValid) break
+        if (!this.#isValid) {
+          this.#setErrText(this.#rule.getErrText())
+          break
+        }
       }
     }
     
@@ -115,6 +127,10 @@ class ArrayValidator {
       if (!this.#isValid) break
       validator.setParam(this.#param)
       this.#isValid = validator.result()
+      if (!this.#isValid) {
+        this.#setErrText(validator.getErrText())
+        break
+      }
     }
 
     return this.#isValid
@@ -126,7 +142,7 @@ class ArrayValidator {
    * @returns {ObjectValidator} ObjectValidator
    */
   errText (errorText: string) {
-    this.#errText = errorText
+    this.#setErrText(errorText)
     return this
   }
 
@@ -135,7 +151,8 @@ class ArrayValidator {
    * @returns {string} error text
    */
   getErrText () {
-    return this.#isValid ? '' : this.#errText
+    const t = this.#isValid ? '' : this.#errText
+    return t
   }
 
   /**

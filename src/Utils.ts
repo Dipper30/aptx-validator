@@ -60,3 +60,5 @@ export const isEmptyValue = (v: any) =>
   (typeof v === 'number' && isNaN(v))
 
 export default new Utils()
+
+export const DEFAULT_ERROR_TEXT = 'validation error'

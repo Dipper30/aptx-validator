@@ -164,10 +164,11 @@ try {
 
   v = { x: 1, y: 'y' }
   r = new Validator(v).object().rules({
-    'x': new Validator().required().number(),
-    'y': new Validator().required().number(),
+    'x': new Validator().required().number().errText('invalid x'),
+    'y': new Validator().required().number().errText('invalid y'),
   }).errText('object required')
   assert.deepStrictEqual(r.result(), false, 'test object-3 fails')
+  assert.deepStrictEqual(r.getErrText(), 'invalid y', 'test object-3-error-text fails')
 
   v = null
   r = new Validator(v).object().rules({
@@ -210,6 +211,18 @@ try {
   }).errText('nested object not required')
   assert.ok(r.result(), 'test object-7 fails')
 
+  v = { x: 1, y: { z: { n: '1' } } }
+  r = new Validator(v).object().rules({
+    'x': new Validator().required().number().use(customizedValidator),
+    'y': new Validator().required().object().rules({
+      'z': new Validator().required().object().rules({
+        'n': new Validator().boolean().errText('invalid n')
+      })
+    }),
+  }).errText('nested object not required')
+  assert.deepStrictEqual(r.result(), false, 'test object-8 fails')
+  assert.deepStrictEqual(r.getErrText(), 'invalid n', 'test object-8-error-text fails')
+  
   console.log('\x1B[32m%s\x1B[0m', 'Object tests passed!')
   console.log('==========')
 } catch (error) {
@@ -253,8 +266,8 @@ try {
   customizedValidator = new Validator().object().rules({
     'id': new Validator().number(),
     'name': new Validator().object().rules({
-      'value': new Validator().string().validate((str: string) => str.length >= 5),
-    }),
+      'value': new Validator().string().validate((str: string) => str.length >= 5).errText('name value not valid'),
+    }).errText('name not valid'),
   })
   v = [
     { id: 1, name: 'name1' },
@@ -262,6 +275,7 @@ try {
   ]
   r = new Validator(v).array(customizedValidator).errText('array with customized validator')
   assert.deepStrictEqual(r.result(), false, 'test array-6 fails')
+  assert.deepStrictEqual(r.getErrText(), 'name not valid', 'test array-6-error-text fails')
 
   customizedValidator = new Validator().object().rules({
     'id': new Validator().number(),
