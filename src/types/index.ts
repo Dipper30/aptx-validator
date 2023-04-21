@@ -58,3 +58,13 @@ export type AllValidator =
 export interface IUnTypedValidator {
 
 }
+
+
+export type {
+  UnTypedValidator,
+  NumberValidator,
+  StringValidator,
+  ObjectValidator,
+  BooleanValidator,
+  ArrayValidator,
+}
