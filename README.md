@@ -1,33 +1,49 @@
 # aptx-validator
-易用且可拓展的 Node.js 参数校验库
+轻量且可拓展的 Javascript 参数校验库，支持 Typescript 类型推断
+A lightweight, flexible Javascript package that enables parameter validation, and provides type infer based on Typescript.
 
-## 安装
+## Install
 
 ``` bash
 npm install aptx-validator
 ```
 
-## 示例
+## Usage
 
-#### 
-
-#### 类型校验
-
+#### Quick Start
 ``` js
-import { Validator } from 'aptx-validator'
+import { number } from 'aptx-validator'
 
-const param = 123
-const validator = new Validator(param).required().number().errText('number required')
-validator.result() // true
+const validator = number().errText('number required')
+validator.test(123) // true
+
+validator.test(true) // false
+validator.getErrText() // 'number required'
 ```
 
-#### 错误处理
+#### Available Type Checkers
+
+``` js
+// including 6 type validators and 2 condition validators
+import { any, boolean, number, string, array, object, or, and } from 'aptx-validator'
+
+// when a validator is claimed, any parameter that satisfies this validator is required(must not be null or undefined or NaN) by default
+const v = boolean()
+v.test(true) // true
+v.test(undefined) // false
+
+// however, you can make the validator optional by claiming 'optional()' function
+const v = boolean().optional()
+v.test(undefined) // true
+```
+
+#### Exceptions
 
 ``` js
 import { Validator } from 'aptx-validator'
 
 const param = '123'
-const validator = new Validator(param).required().number().errText('number required')
+const validator = new Validator(param).optional().number().errText('number required')
 validator.result() // false
 
 validator.error() // Error: number required ...
@@ -65,10 +81,10 @@ class UserValidator {
   // 校验器中间件
   register (req, res, next) {
     // 定义校验规则
-    const validator = new Validator(req.body).required().object().rules({
-      'id': new Validator().required().number().min(1).errText('id 校验错误'),
-      'username': new Validator().required().string().minLength(4).maxLength(18),
-      'password': new Validator().required().string().useRE(/\d{6,18}/g),
+    const validator = new Validator(req.body).optional().object().rules({
+      'id': new Validator().optional().number().min(1).errText('id 校验错误'),
+      'username': new Validator().optional().string().minLength(4).maxLength(18),
+      'password': new Validator().optional().string().useRE(/\d{6,18}/g),
       'email': customizedEmailValidator,
     }).errText('参数错误')
 
@@ -93,7 +109,7 @@ export default UserValidator
 // 默认为非必须字段
 const numberValidator = new Validator(123).number()
 numberValidator.result() // true
-const stringValidator = new Validator('123').required().string()
+const stringValidator = new Validator('123').optional().string()
 stringValidator.result() // true
 const booleanValidator = new Validator(false).boolean()
 booleanValidator.result() // true
@@ -104,8 +120,8 @@ new Validator(null).number().result() // true
 new Validator(undefined).number().result() // true
 new Validator(NaN).number().result() // true
 
-// required() 声明为必须字段
-new Validator(null).required().number().result() // false
+// optional() 声明为必须字段
+new Validator(null).optional().number().result() // false
 ```
 
 #### 数组
@@ -118,8 +134,8 @@ new Validator(null).required().number().result() // false
 // 3. string, 数组中的值必须为 string
 // 4. boolean, 数组中的值必须为 boolean
 // 5. Validator, 传入一个 Validator 校验器
-new Validator([1, 2, 3]).required().array('number').errText('number[]').result() // true
-new Validator([1, 2, 3]).required().array('string').result() // false
+new Validator([1, 2, 3]).optional().array('number').errText('number[]').result() // true
+new Validator([1, 2, 3]).optional().array('string').result() // false
 ```
 
 #### 对象
@@ -127,8 +143,8 @@ new Validator([1, 2, 3]).required().array('string').result() // false
 ``` js
 // 使用 rules() 方法传入一个对象
 new Validator({ id: 1, name: 'Alice' }).object().rules({
-  'id': new Validator().required().number(),
-  'name': new Validator().required().string(),
+  'id': new Validator().optional().number(),
+  'name': new Validator().optional().string(),
 })
 .errText('对象参数错误')
 .result() // true
@@ -142,11 +158,11 @@ new Validator({
   id: 1,
   name: { firstName: 'Alice', middleName: null, lastName: 'Wonderland' },
   }).object().rules({
-  'id': new Validator().required().number(),
-  'name': new Validator().required().obejct().rules({
-    'firstName': new Validator().required().string().minLength(1),
+  'id': new Validator().optional().number(),
+  'name': new Validator().optional().obejct().rules({
+    'firstName': new Validator().optional().string().minLength(1),
     'middleName': new Validator().string(),
-    'lastName': new Validator().required().string().minLength(1),
+    'lastName': new Validator().optional().string().minLength(1),
   }),
 })
 .result() // true
@@ -168,11 +184,11 @@ const param = [
 ]
 
 const objectValidator = new Validator().object().rules({
-  'id': new Validator().required().number(),
-  'name': new Validator().required().obejct().rules({
-    'firstName': new Validator().required().string().minLength(1),
+  'id': new Validator().optional().number(),
+  'name': new Validator().optional().obejct().rules({
+    'firstName': new Validator().optional().string().minLength(1),
     'middleName': new Validator().string(),
-    'lastName': new Validator().required().string().minLength(1),
+    'lastName': new Validator().optional().string().minLength(1),
   })
 
 new Validator(param).array(objectValidator).result() // false, Bob 的 lastName 不符合 minLength(1)
@@ -188,7 +204,7 @@ new Validator(param).array(objectValidator).result() // false, Bob 的 lastName 
 const isOdd = (param) => param % 2 === 1 // 是否为奇数
 
 // 使用 validate 进行自定义方法声明
-new Validator(13).required().number().validate(isOdd).result() // true
+new Validator(13).optional().number().validate(isOdd).result() // true
 
 ```
 
@@ -198,7 +214,7 @@ new Validator(13).required().number().validate(isOdd).result() // true
 // 对常用的或逻辑复杂的校验器可以做拆分并复用
 
 // 这是一个毫无逻辑的 String 校验器
-const customizedValidator = new Validator().required().string().minLength(12).validate(
+const customizedValidator = new Validator().optional().string().minLength(12).validate(
   (param) => param.split('&').length > 2
 )
 
