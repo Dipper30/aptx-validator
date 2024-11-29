@@ -1,29 +1,42 @@
-import 'module-alias'
-import Validator from './UntypedValidator'
-import { AllValidator, ArrayValidator, BooleanValidator, NumberValidator, ObjectValidator, StringValidator, UnTypedValidator } from './types'
-import Utils from './Utils'
+import 'module-alias';
+import BooleanValidator from './BooleanValidator';
+import ObjectValidator from './ObjectValidator';
+import NumberValidator from './NumberValidator';
+import StringValidator from './StringValidator';
+import AnyValidator from './AnyValidator';
+import ArrayValidator from './ArrayValidator';
+import AllValidator from './AllValidator';
+import { OrCondition, AndCondition } from './helpers';
+import { AndParams, ARecord, OrParams } from './types';
 
-const override = Utils.resetFunction.bind(Utils)
+export const boolean = () => new BooleanValidator<false>();
+export const number = () => new NumberValidator<false>();
+export const string = () => new StringValidator<false>();
+export const object = <T extends ARecord = any>(v?: T) => new ObjectValidator<T>(v);
+export const array = <T extends AllValidator = AnyValidator>(v?: T) => new ArrayValidator<T>(v);
+export const any = () => new AnyValidator<true>();
+export const or = <T extends OrParams = any>(p: T) => new OrCondition<T>(p);
+export const and = <T extends AndParams = any>(p: T) => new AndCondition<T>(p);
 
-/**
- * a factory function which creates a new Validator
- * @param {any} data optional
- * @returns a new Validator
- */
-const validate = (data?: any) => new Validator(data)
-
-export {
-  Validator,
-  validate,
-  override,
-}
+export default {
+  boolean,
+  object,
+  number,
+  string,
+  any,
+  array,
+  or,
+  and,
+};
 
 export type {
-  AllValidator,
-  UnTypedValidator,
+  BooleanValidator,
+  ObjectValidator,
   NumberValidator,
   StringValidator,
-  ObjectValidator,
-  BooleanValidator,
+  AnyValidator,
   ArrayValidator,
-}
+  AllValidator,
+  OrCondition,
+  AndCondition,
+};

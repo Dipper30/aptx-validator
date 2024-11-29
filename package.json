@@ -1,12 +1,13 @@
 {
   "name": "aptx-validator",
-  "version": "1.2.1",
+  "version": "2.0.0",
   "description": "易用且可拓展的 Node.js 参数校验库",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
-    "start": "ts-node --esm src/index.ts",
-    "test": "ts-node --esm test/index.ts",
+    "start": "ts-node src/index.ts",
+    "test": "ts-node test/index.ts",
+    "lint": "eslint src/*.ts",
     "build": "tsc"
   },
   "files": [
@@ -34,13 +35,8 @@
   },
   "homepage": "https://github.com/Dipper30/aptx-validator#readme",
   "dependencies": {
-    "@types/node": "^18.8.4",
     "assert": "^2.0.0",
-    "module-alias": "^2.2.2",
-    "node-ts": "^5.1.2",
-    "ts-node": "^10.9.1",
-    "tslib": "^2.4.0",
-    "typescript": "^4.8.4"
+    "eslint-plugin-prettier": "^5.2.1"
   },
   "env": {
     "es6": true,
@@ -48,5 +44,19 @@
   },
   "_moduleAliases": {
     "@": "./src"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.10.0",
+    "@types/node": "^22.5.5",
+    "@typescript-eslint/eslint-plugin": "^8.6.0",
+    "@typescript-eslint/parser": "^8.6.0",
+    "eslint": "^9.10.0",
+    "globals": "^15.9.0",
+    "module-alias": "^2.2.2",
+    "node-ts": "^6.1.2",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.7.0",
+    "typescript": "^5.6.2"
   }
 }
