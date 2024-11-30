@@ -7,7 +7,7 @@ import AnyValidator from "./AnyValidator";
 import ArrayValidator from "./ArrayValidator";
 import AllValidator from "./AllValidator";
 import { OrCondition, AndCondition } from "./helpers";
-import { AndParams, ARecord, OrParams, Infer } from "./types";
+import { AndParams, ARecord, OrParams } from "./types";
 
 export const boolean = () => new BooleanValidator<false>();
 export const number = () => new NumberValidator<false>();
@@ -41,5 +41,6 @@ export type {
   AllValidator,
   OrCondition,
   AndCondition,
-  Infer,
 };
+
+export * from "./types";
