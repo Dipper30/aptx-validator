@@ -7,7 +7,6 @@ import AnyValidator from "./AnyValidator";
 import ArrayValidator from "./ArrayValidator";
 import AllValidator from "./AllValidator";
 import { OrCondition, AndCondition } from "./helpers";
-import { AndParams, ARecord, OrParams } from "./types";
 
 export const boolean = () => new BooleanValidator<false>();
 export const number = () => new NumberValidator<false>();
@@ -44,3 +43,80 @@ export type {
 };
 
 export * from "./types";
+
+export type ARecord = Record<string, AllValidator<any, boolean>>;
+export type OrParams = Readonly<
+  [
+    AllValidator<any, boolean>,
+    AllValidator<any, boolean>,
+    ...AllValidator<boolean>[],
+  ]
+>;
+export type AndParams = Readonly<
+  [AllValidator<any, boolean>, AllValidator<any, boolean>]
+>;
+
+export type Infer<Input extends AllValidator<any, boolean>> =
+  Input extends AnyValidator
+    ? any
+    : Input extends
+          | BooleanValidator<boolean>
+          | NumberValidator<boolean>
+          | StringValidator<boolean>
+      ? OptionalInfer<Input>
+      : Input extends OrCondition<OrParams, boolean, boolean>
+        ? Input["isOptional"] extends false
+          ? OrInfer<Input["output"]>
+          : OrInfer<Input["output"]> | undefined
+        : Input extends AndCondition<AndParams, boolean, boolean>
+          ? Input["isOptional"] extends false
+            ? AndInfer<Input["output"]>
+            : AndInfer<Input["output"]> | undefined
+          : Input extends ArrayValidator<any, boolean>
+            ? Input["isOptional"] extends false
+              ? ArrayInfer<Input["output"]>
+              : ArrayInfer<Input["output"]> | undefined
+            : Input extends ObjectValidator<any, boolean>
+              ? Input["isOptional"] extends false
+                ? ObjectInfer<Input["output"]>
+                : ObjectInfer<Input["output"]> | undefined
+              : never;
+
+export type ComputedOptionalKey<T extends ARecord> = {
+  [k in keyof T]: T[k]["isOptional"];
+};
+
+export type SelectRequiredKey<T extends Record<string, boolean>> = keyof {
+  [k in keyof T as T extends Record<k, false> ? k : never]: k;
+};
+
+export type ObjectRule<T extends ARecord> = {
+  [k in keyof T]?: Infer<T[k]>;
+};
+
+export type UnionType<T> = T extends (infer E)[] ? E : never;
+
+export type PickRequiredKey<T, K extends keyof T> = Omit<T, K> & {
+  [k in K]-?: T[k];
+};
+
+export type ObjectInfer<A extends ARecord> = PickRequiredKey<
+  ObjectRule<A>,
+  SelectRequiredKey<ComputedOptionalKey<A>>
+>;
+export type ArrayInfer<A extends AllValidator<boolean>> = Infer<A>[];
+export type OrInfer<A extends OrParams> = UnionType<OrObject<A>>;
+export type AndInfer<A extends AndParams> = Infer<A[0]> & Infer<A[1]>;
+export type OptionalInfer<V extends AllValidator<any, boolean>> =
+  V["isOptional"] extends true ? V["output"] | undefined : V["output"];
+export type OrObject<T extends OrParams> = {
+  [k in keyof T]: Infer<T[k]>;
+};
+export type AndObject<T extends AndParams> = {
+  [k in keyof T]: Infer<T[k]>;
+};
+
+export type OptionalValidator<T extends AllValidator> = Exclude<
+  T,
+  "isOptional"
+> & { isOptional: true };

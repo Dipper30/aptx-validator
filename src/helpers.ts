@@ -1,8 +1,12 @@
-import AllValidator from './AllValidator';
-import { AndParams, OrParams } from './types';
-import { isEmptyValue } from './Utils';
+import { AndParams, OrParams } from ".";
+import AllValidator from "./AllValidator";
+import { isEmptyValue } from "./Utils";
 
-export class OrCondition<T extends OrParams = any, O extends boolean = false, N extends boolean = false > extends AllValidator<T, O, N> {
+export class OrCondition<
+  T extends OrParams = any,
+  O extends boolean = false,
+  N extends boolean = false,
+> extends AllValidator<T, O, N> {
   override output: T;
   #optional = false;
   #validators: T;
@@ -31,7 +35,11 @@ export class OrCondition<T extends OrParams = any, O extends boolean = false, N 
   }
 }
 
-export class AndCondition< T extends AndParams = any, O extends boolean = false, N extends boolean = false> extends AllValidator<T, O, N> {
+export class AndCondition<
+  T extends AndParams = any,
+  O extends boolean = false,
+  N extends boolean = false,
+> extends AllValidator<T, O, N> {
   override output: T;
   #optional = false;
   #nullable = false;
@@ -39,7 +47,7 @@ export class AndCondition< T extends AndParams = any, O extends boolean = false,
 
   constructor(validators: T) {
     super();
-    this.output = validators
+    this.output = validators;
     this.#validators = validators;
   }
 
@@ -67,9 +75,7 @@ export class AndCondition< T extends AndParams = any, O extends boolean = false,
 }
 
 export class ValidationException {
-  errMsg: string = ''
+  errMsg: string = "";
 
-  constructor(v: AllValidator) {
-
-  }
+  constructor(v: AllValidator) {}
 }
