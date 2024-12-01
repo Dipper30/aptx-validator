@@ -1,247 +1,231 @@
 # aptx-validator
+
 轻量且可拓展的 Javascript 参数校验库，支持 Typescript 类型推断
 A lightweight, flexible Javascript package that enables parameter validation, and provides type infer based on Typescript.
 
 ## Install
 
-``` bash
+```bash
 npm install aptx-validator
 ```
 
-## Usage
+## Quick Start
 
-#### Quick Start
-``` js
-import { number } from 'aptx-validator'
+```js
+import { number } from "aptx-validator";
 
-const validator = number().errText('number required')
-validator.test(123) // true
+const validator = number().errText("number required");
+validator.test(123); // true
 
-validator.test(true) // false
-validator.getErrText() // 'number required'
+validator.test(true); // false
+validator.getErrText(); // 'number required'
 ```
 
 #### Available Type Checkers
 
-``` js
+```js
 // including 6 type validators and 2 condition validators
-import { any, boolean, number, string, array, object, or, and } from 'aptx-validator'
+import {
+  any,
+  boolean,
+  number,
+  string,
+  array,
+  object,
+  or,
+  and,
+} from "aptx-validator";
 
 // when a validator is claimed, any parameter that satisfies this validator is required(must not be null or undefined or NaN) by default
-const v = boolean()
-v.test(true) // true
-v.test(undefined) // false
+const v = boolean();
+v.test(true); // true
+v.test(undefined); // false
 
 // however, you can make the validator optional by claiming 'optional()' function
-const v = boolean().optional()
-v.test(undefined) // true
+const v = boolean().optional();
+v.test(undefined); // true
 ```
 
-#### Exceptions
+## Usage
 
-``` js
-import { Validator } from 'aptx-validator'
+#### Primitive Type Checkers
 
-const param = '123'
-const validator = new Validator(param).optional().number().errText('number required')
-validator.result() // false
+```js
+// all types are optional by default
+const numberValidator = number();
+numberValidator.test(1); // true
+numberValidator.test(true); // false
+numberValidator.test(undefined); // false
+numberValidator.test(null); // false
+numberValidator.test(NaN); // false
 
-validator.error() // Error: number required ...
-validator.getErrText() // 'number required'
+const stringValidator = string();
+stringValidator.test(1); // false
+
+const booleanValidator = boolean();
+booleanValidator.test(false); // true
+
+// optional params
+const optionalNumberValidator = number().optional();
+numberValidator.test(undefined); // true
+numberValidator.test(null); // true
+numberValidator.test(NaN); // true
 ```
 
-#### 在 Express 中使用参数校验
+#### Object Checker
 
-``` js
-// router.js 文件
-import UserValidator from '@/validators'
-import UserController from '@/controllers'
-import express, { Router } from 'express'
-
-const app = express()
-const router = Router()
-
-app.use('/api', router)
-
-
-router.post('/register', UserValidator.register, UserController.register)
-
-app.listen(3000, () => console.log('Aptx validator demo started on 3000!'))
-```
-
-``` js
-// UserValidator.js 文件
-import { Validator } from 'aptx-validator'
-
-class UserValidator {
-
-  // 自定义校验规则
-  customizedEmailValidator = new Validator().string().useRE(/^[0-9a-zA-Z_.-]+[@][0-9a-zA-Z_.-]+([.][a-zA-Z]+){1,2}$/).errText('Invalid Email!')
-
-  // 校验器中间件
-  register (req, res, next) {
-    // 定义校验规则
-    const validator = new Validator(req.body).optional().object().rules({
-      'id': new Validator().optional().number().min(1).errText('id 校验错误'),
-      'username': new Validator().optional().string().minLength(4).maxLength(18),
-      'password': new Validator().optional().string().useRE(/\d{6,18}/g),
-      'email': customizedEmailValidator,
-    }).errText('参数错误')
-
-    if (!validator.result()) {
-      // 返回 Error
-      next(validator.error())
-    }
-
-    next()
-  }
-
-}
-
-export default UserValidator
-```
-
-## 基本用法
-
-#### 基本类型
-
-``` js
-// 默认为非必须字段
-const numberValidator = new Validator(123).number()
-numberValidator.result() // true
-const stringValidator = new Validator('123').optional().string()
-stringValidator.result() // true
-const booleanValidator = new Validator(false).boolean()
-booleanValidator.result() // true
-
-// 当传入值为 null 或者 undefined 或者 NaN 时, 默认为合法值
-new Validator().number().result() // true
-new Validator(null).number().result() // true
-new Validator(undefined).number().result() // true
-new Validator(NaN).number().result() // true
-
-// optional() 声明为必须字段
-new Validator(null).optional().number().result() // false
-```
-
-#### 数组
-
-``` js
-// array() 方法声明一个数组变量
-// array() 方法可以传入参数
-// 1. 空, 对数组中的值没有定义校验规则
-// 2. number, 数组中的值必须为 number
-// 3. string, 数组中的值必须为 string
-// 4. boolean, 数组中的值必须为 boolean
-// 5. Validator, 传入一个 Validator 校验器
-new Validator([1, 2, 3]).optional().array('number').errText('number[]').result() // true
-new Validator([1, 2, 3]).optional().array('string').result() // false
-```
-
-#### 对象
-
-``` js
-// 使用 rules() 方法传入一个对象
-new Validator({ id: 1, name: 'Alice' }).object().rules({
-  'id': new Validator().optional().number(),
-  'name': new Validator().optional().string(),
-})
-.errText('对象参数错误')
-.result() // true
-```
-
-#### 类型嵌套
-
-``` js
-// 对象中的对象
-new Validator({
+```js
+const objectChecker = object({
+  id: number(),
+  name: string().optional(),
+});
+objectChecker.test({
   id: 1,
-  name: { firstName: 'Alice', middleName: null, lastName: 'Wonderland' },
-  }).object().rules({
-  'id': new Validator().optional().number(),
-  'name': new Validator().optional().obejct().rules({
-    'firstName': new Validator().optional().string().minLength(1),
-    'middleName': new Validator().string(),
-    'lastName': new Validator().optional().string().minLength(1),
-  }),
-})
-.result() // true
+}); // true
+objectChecker.test({
+  id: 1,
+  name: "Alice",
+}); // true
+objectChecker.test({
+  name: "Bob",
+}); // false
 ```
 
-``` js
-// 数组中的对象
-// 嵌套复杂时可以做拆分
+```js
+// and of course objects can be nested
+const objectChecker = object({
+  id: number(),
+  fullName: {
+    first: string(),
+    middle: string().optional(),
+    last: string(),
+  },
+});
+objectChecker.test({
+  id: 1,
+  fullName: {
+    first: "Donald",
+    middle: undefined,
+    last: "trump",
+  },
+}); // true
+```
 
-const param = [
+#### Array Checker
+
+```js
+const arrayChecker = array(number());
+arrayChecker1.test([1, 2]); // true
+arrayChecker1.test(["1", "2"]); // false
+```
+
+```js
+// and of course objects can be included in arrays
+const arrayChecker = array(
+  object({
+    id: number(),
+  })
+);
+arrayChecker.test([1, 2]); // false
+arrayChecker.test([
   {
     id: 1,
-    name: { firstName: 'Alice', middleName: null, lastName: 'Wonderland' },
   },
-  {
-    id: 2,
-    name: { firstName: 'Bob', middleName: null, lastName: '' },
-  },
-]
-
-const objectValidator = new Validator().object().rules({
-  'id': new Validator().optional().number(),
-  'name': new Validator().optional().obejct().rules({
-    'firstName': new Validator().optional().string().minLength(1),
-    'middleName': new Validator().string(),
-    'lastName': new Validator().optional().string().minLength(1),
-  })
-
-new Validator(param).array(objectValidator).result() // false, Bob 的 lastName 不符合 minLength(1)
+]); // true
 ```
 
-## 拓展
+### And / Or Conditions
 
-#### 自定义校验方法
-
-``` js
-// 有时校验方法并不能满足全部需求, 开发人员可以自定义方法并投入使用
-
-const isOdd = (param) => param % 2 === 1 // 是否为奇数
-
-// 使用 validate 进行自定义方法声明
-new Validator(13).optional().number().validate(isOdd).result() // true
-
+```js
+const orCondition = or([string(), number()]);
+orCondition.test(1); // true
+orCondition.test("2"); // true
+orCondition.test(true); // false
 ```
 
-#### 自定义校验器
-
-``` js
-// 对常用的或逻辑复杂的校验器可以做拆分并复用
-
-// 这是一个毫无逻辑的 String 校验器
-const customizedValidator = new Validator().optional().string().minLength(12).validate(
-  (param) => param.split('&').length > 2
-)
-
-// 使用 use 方法声明自定义校验器
-new Validator('123==&==123').string().maxLength(20).use(customizedValidator).result() // false
-
+```js
+const andCondition = and([
+  object({
+    id: number(),
+    name: number().optional(),
+  }),
+  object({
+    id: number(),
+    name: string().optional(),
+  }),
+]);
+andCondition.test({
+  id: 1,
+  name: 1,
+}); // true
+andCondition.test({
+  id: 1,
+  name: "1",
+}); // true
 ```
 
-#### 重写判断方法
+## Handle Errors
 
-``` js
-// 如果以上拓展方式不能满足所有需求, 开发人员可以选择对原生校验方法进行修改
-// override 会对原生方法造成不可逆的影响, 声明时应放在全局头部以避免混乱
-import { override, Validator } from 'aptx-validator'
+```js
+const validator = number().errText("number required");
+validator.test(undefined); // false
+validator.getErrText(); // 'number required'
+```
+
+```js
+const validator = object({
+  id: number().errText("number required"),
+}).errText("object required");
+validator.test({}); // false
+validator.getErrText(); // 'number required'
+```
+
+## Use Validator in Express.js
+
+```js
+// validator.ts
+import { AllValidator, number, object, Infer } from 'aptx-validator';
 
 /**
- * @param { keyof Utils } fnName 一个已经存在的原生方法名
- * @param { UtilFunction } overrideFunction 返回校验方法的高阶函数
+ * Middleware
  */
-override('min', (min: number) => ((param: number) => param <= min)) // 将最小值判定修改为最大值判定
+export const bodyValidator = (v: AllValidator) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const isValid = v.test(req.body);
+    if (!isValid) {
+      throw new ParameterException(null, v.getErrText());
+    } else {
+      next();
+    }
+  };
+};
 
-new Validator(10).number().min(8).result() // false
-new Validator(10).number().min(12).result() // true
+type GetType<F extends () => AllValidator> = Infer<ReturnType<F>>;
+
+export const postTest = () => {
+  return object({
+    id: number().errText('number required').errText('ID required'),
+  });
+};
+export type PostTestParams = GetType<typeof postTest>;
+
+// add more validators here...
+
 ```
 
-## 文档
+```js
+// router.ts
+import express, { Router } from "express";
+import { UserController } from "@/controllers";
+import { bodyValidator, postTest } from "@/validators";
 
-``` md
-// TODO
+const app = express();
+const router = Router();
+
+app.use("/api", router);
+
+// what routers do
+router.post("/register", bodyValidator(postTest()), UserController.register);
+
+app.listen(3000, () => console.log("validator demo started on 3000!"));
 ```

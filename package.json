@@ -1,6 +1,6 @@
 {
-  "name": "dipper-validator",
-  "version": "1.0.5",
+  "name": "aptx-validator",
+  "version": "3.0.1",
   "description": "轻量易用的 Node.js + Typescript 参数校验库",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
