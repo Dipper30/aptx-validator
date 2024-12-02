@@ -53,6 +53,14 @@ export default () => {
     ]).errText("string or object");
     assert.ok(!a6.test(v), "test and-6 fails");
 
+    const c1 = string()
+      .custom((v) => v.length > 3)
+      .errText("string len > 3");
+    v = "test";
+    assert.ok(c1.test(v), "test custom-1 fails");
+    v = "str";
+    assert.equal(c1.test(v), false, "test custom-1 fails");
+
     console.log("\x1B[32m%s\x1B[0m", "Helper tests passed!");
     console.log("==========");
   } catch (error) {

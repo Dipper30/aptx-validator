@@ -1,11 +1,15 @@
-import AllValidator from './AllValidator';
-import { ValidateFunction } from './types';
-import Utils, { isEmptyValue } from './Utils';
+import AllValidator from "./AllValidator";
+import { ValidateFunction } from "./types";
+import Utils, { isEmptyValue } from "./Utils";
 
 /**
  * Validator for Number parameters, which includes multiple Number validation methods.
  */
-class NumberValidator<O extends boolean = false> extends AllValidator<number, O, false> {
+class NumberValidator<O extends boolean = false> extends AllValidator<
+  number,
+  O,
+  false
+> {
   override output: number;
 
   #validationTasks: ValidateFunction[] = [];
@@ -22,14 +26,19 @@ class NumberValidator<O extends boolean = false> extends AllValidator<number, O,
     this.#validationTasks.push(fn);
   }
 
+  custom(fn: ValidateFunction) {
+    this.#addValidation(fn);
+    return this;
+  }
+
   optional() {
     this.#optional = true;
-    return this as NumberValidator< true>;
+    return this as NumberValidator<true>;
   }
 
   nullable() {
-    this.#nullable = true
-    return this as NumberValidator<O>
+    this.#nullable = true;
+    return this as NumberValidator<O>;
   }
 
   /**
@@ -121,7 +130,7 @@ class NumberValidator<O extends boolean = false> extends AllValidator<number, O,
       return this.#optional;
     }
     if (Number.isNaN(p) && !this.#nullable) {
-      return false
+      return false;
     }
 
     for (const fn of this.#validationTasks) {

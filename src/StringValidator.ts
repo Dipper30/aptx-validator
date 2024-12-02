@@ -1,23 +1,31 @@
-import AllValidator from './AllValidator';
-import { ValidateFunction } from './types';
-import Utils, { isEmptyValue } from './Utils';
+import AllValidator from "./AllValidator";
+import { ValidateFunction } from "./types";
+import Utils, { isEmptyValue } from "./Utils";
 
 /**
  * Validator for String parameters, which includes multiple String validation methods.
  */
-class StringValidator<O extends boolean = false, N extends boolean = false> extends AllValidator<string, O, N> {
+class StringValidator<
+  O extends boolean = false,
+  N extends boolean = false,
+> extends AllValidator<string, O, N> {
   override output: string;
 
   #validationTasks: ValidateFunction[] = [];
   #optional = false;
   constructor() {
     super();
-    this.output = '';
+    this.output = "";
     this.#addValidation(Utils.string());
   }
 
   #addValidation(fn: ValidateFunction) {
     this.#validationTasks.push(fn);
+  }
+
+  custom(fn: ValidateFunction) {
+    this.#addValidation(fn);
+    return this;
   }
 
   optional() {

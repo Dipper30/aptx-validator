@@ -28,6 +28,11 @@ class ObjectValidator<
     this.#validationTasks.push(fn);
   }
 
+  custom(fn: ValidateFunction) {
+    this.#addValidation(fn);
+    return this;
+  }
+
   optional() {
     this.#optional = true;
     return this as ObjectValidator<T, true, N>;

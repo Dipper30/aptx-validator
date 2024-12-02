@@ -134,7 +134,7 @@ arrayChecker.test([
 ]); // true
 ```
 
-### And / Or Conditions
+#### And / Or Conditions
 
 ```js
 const orCondition = or([string(), number()]);
@@ -161,6 +161,22 @@ andCondition.test({
   id: 1,
   name: "1",
 }); // false
+```
+
+#### Custom Validation
+
+```js
+// for string(), number(), object(), array(), custom validation is supported
+
+// custom validation function
+type ValidateFunction = (value: any, option?: any) => boolean;
+
+const atLeast3Letters: ValidateFunction = (v: string) => v.length > 3
+
+
+const customStringValidator = string().custom(atLeast3Letters);
+customStringValidator.test("test"); // true
+customStringValidator.test("str"); // false
 ```
 
 ## Handle Errors
