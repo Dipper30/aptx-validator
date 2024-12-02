@@ -51,7 +51,7 @@ v.test(undefined); // true
 #### Primitive Type Checkers
 
 ```js
-// all types are optional by default
+// all types are required by default
 const numberValidator = number();
 numberValidator.test(1); // true
 numberValidator.test(true); // false
@@ -95,11 +95,11 @@ objectChecker.test({
 // and of course objects can be nested
 const objectChecker = object({
   id: number(),
-  fullName: {
+  fullName: object({
     first: string(),
     middle: string().optional(),
     last: string(),
-  },
+  }),
 });
 objectChecker.test({
   id: 1,
@@ -156,12 +156,11 @@ const andCondition = and([
 ]);
 andCondition.test({
   id: 1,
-  name: 1,
 }); // true
 andCondition.test({
   id: 1,
   name: "1",
-}); // true
+}); // false
 ```
 
 ## Handle Errors
@@ -193,7 +192,7 @@ export const bodyValidator = (v: AllValidator) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const isValid = v.test(req.body);
     if (!isValid) {
-      throw new ParameterException(null, v.getErrText());
+      throw new Error(`Parameter Error: ${v.getErrText()}`);
     } else {
       next();
     }
