@@ -1,9 +1,9 @@
 {
   "name": "aptx-validator",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "description": "轻量易用的 Node.js + Typescript 参数校验库",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "start": "ts-node src/index.ts",
     "test": "ts-node test/index.ts",
