@@ -1,6 +1,6 @@
 {
   "name": "aptx-validator",
-  "version": "3.1.0",
+  "version": "3.1.1-beta.1",
   "description": "轻量易用的 Node.js + Typescript 参数校验库",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -8,7 +8,7 @@
     "start": "ts-node src/index.ts",
     "test": "ts-node test/index.ts",
     "lint": "eslint src/*.ts",
-    "build": "tsc"
+    "build": "rm -rf dist && tsc -p tsconfig.json"
   },
   "files": [
     "dist",
@@ -35,7 +35,9 @@
   },
   "homepage": "https://github.com/Dipper30/aptx-validator#readme",
   "dependencies": {
+    "aptx-validator": "^3.1.1-beta.1",
     "assert": "^2.0.0",
+    "dotenv": "^16.4.7",
     "eslint-plugin-prettier": "^5.2.1"
   },
   "env": {

@@ -1,4 +1,4 @@
-import { array, ArrayValidator, string} from '../src/index';
+import { array, ArrayValidator, string } from '../src/index';
 import assert from 'assert';
 
 let v: any;
@@ -24,9 +24,16 @@ export default () => {
     assert.strictEqual(a4.test(v), true, 'test array-4 fails');
 
     v = ['1', '2'];
-    const a5 = array(string()).optional().minLength(3).errText('array min len 3');
+    const a5 = array(string())
+      .optional()
+      .minLength(3)
+      .errText('array min len 3');
     assert.strictEqual(a5.test(v), false, 'test array-5 fails');
-    assert.strictEqual(a5.getErrText(), 'array min len 3', 'test array-5 fails');
+    assert.strictEqual(
+      a5.getErrText(),
+      'array min len 3',
+      'test array-5 fails',
+    );
 
     v = [1, 2];
     const a6 = array(string()).optional();
